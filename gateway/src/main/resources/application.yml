@@ -1,0 +1,82 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: user-profile-registration
+          uri: http://localhost:8082
+          predicates:
+            - Path=/userProfiles/**, 
+        - id: matching-algorithm
+          uri: http://localhost:8083
+          predicates:
+            - Path=/matchingAlgorithms/**, 
+        - id: matching-result
+          uri: http://localhost:8085
+          predicates:
+            - Path=/matchingResults/**, 
+        - id: chat
+          uri: http://localhost:8088
+          predicates:
+            - Path=/chatRooms/**, /chatMessages/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: user-profile-registration
+          uri: http://userProfileRegistration:8080
+          predicates:
+            - Path=/userProfiles/**, 
+        - id: matching-algorithm
+          uri: http://matchingAlgorithm:8080
+          predicates:
+            - Path=/matchingAlgorithms/**, 
+        - id: matching-result
+          uri: http://matchingResult:8080
+          predicates:
+            - Path=/matchingResults/**, 
+        - id: chat
+          uri: http://chat:8080
+          predicates:
+            - Path=/chatRooms/**, /chatMessages/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
